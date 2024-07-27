@@ -14,7 +14,7 @@ RUN apk update && \
     rm -f /tmp/apache-maven.tar.gz
 WORKDIR /usr/app
 COPY . /usr/app
-RUN chmod +x mvnw && ./mvnw clean install package
+RUN clean install package
 COPY /usr/app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
