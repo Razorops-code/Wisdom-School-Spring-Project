@@ -14,7 +14,9 @@ RUN apk update && \
     tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 && \
     rm -f /tmp/apache-maven.tar.gz
 COPY . /usr/app
-RUN mvn clean install package  
+RUN mvn clean install package
+RUN cd target 
+RUN ls -a
 COPY /usr/app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
