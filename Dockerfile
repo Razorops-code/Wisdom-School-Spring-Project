@@ -1,4 +1,5 @@
 FROM openjdk:8-jdk-alpine 
+WORKDIR /usr/app
 # Set environment variables for Maven installation
 ENV MAVEN_VERSION=3.8.8
 ENV MAVEN_HOME=/usr/share/maven
@@ -12,9 +13,8 @@ RUN apk update && \
     mkdir -p /usr/share/maven && \
     tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 && \
     rm -f /tmp/apache-maven.tar.gz
-WORKDIR /usr/app
 COPY . /usr/app
-RUN mvn clean install package
+RUN mvn clean install package  
 COPY /usr/app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
