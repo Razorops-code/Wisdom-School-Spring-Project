@@ -1,13 +1,14 @@
 tasks:
-  hello-job:
+  build-job:
     runner: razorci/openjdk:11-buster
     steps:
-    - git --version
     - checkout
-    - cache/pull:
-        key: maven-repo-{{ checksum "pom.xml" }}
-        fallback_key: maven-repo-
-        
-    - run: mvn clean package
-    - reports/junit: 
-      - target/surefire-reports/TEST-*.xml
+    - commands:
+      - |
+        mvn clean package                  # build the package 
+        ls -a
+        ls target 
+    - docker/build:
+       image: razoropsrepocode/spring       # build the image with Dockerfile
+       push: true                           # push image to docker hub repository Which is integrated  
+       tags: ["latest"]
