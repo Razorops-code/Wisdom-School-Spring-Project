@@ -9,6 +9,6 @@ tasks:
         ls -a
         ls target 
     - docker/build:
-       image: razoropsrepocode/spring       # build the image with Dockerfile
+       image: razoropsrepocode/wisdom-school       # build the image with Dockerfile
        push: true                           # push image to docker hub repository Which is integrated  
        tags: ["latest"]
