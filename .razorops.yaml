@@ -5,10 +5,10 @@ tasks:
     - checkout
     - commands:
       - |
-        mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=school \
-            -Dsonar.host.url=http://13.127.0.77:9000 \
-            -Dsonar.login=sqp_5c2d732bd9ce22435aca0fa4b2613488c2be7d16
+        # mvn clean verify sonar:sonar \
+        #     -Dsonar.projectKey=school \
+        #     -Dsonar.host.url=http://13.127.0.77:9000 \
+        #     -Dsonar.login=sqp_5c2d732bd9ce22435aca0fa4b2613488c2be7d16
         mvn clean package                  # build the package 
         ls -a
         ls target 
