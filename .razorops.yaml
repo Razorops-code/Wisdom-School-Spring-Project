@@ -12,8 +12,19 @@ tasks:
         mvn clean package                  # build the package 
         ls -a
         ls target 
-        kubectl get pods 
+       
     - docker/build:
        image: razoropsrepocode/wisdom-school       # build the image with Dockerfile
        push: true                           # push image to docker hub repository Which is integrated  
        tags: ["latest"]
+  deploy-kubernets:
+    when: branch == 'master' # only run if code is pushed to develop branch
+    depends: [build-job]
+    steps: 
+    - checkout
+    - commands:
+      - |
+        kubectl get nodes -o wide
+        kubectl create -f deployment.yml
+        kubectl create -f service.yml
+        kubectl get svc
