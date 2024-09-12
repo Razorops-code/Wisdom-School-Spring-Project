@@ -12,7 +12,7 @@ tasks:
         mvn clean package                  # build the package 
         ls -a
         ls target 
-        kubectl get nodes 
+        kubectl get pods 
     - docker/build:
        image: razoropsrepocode/wisdom-school       # build the image with Dockerfile
        push: true                           # push image to docker hub repository Which is integrated  
