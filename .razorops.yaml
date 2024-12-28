@@ -1,6 +1,6 @@
 tasks:
   hello-job:
-    runner: razorci/openjdk:11-buster
+   #runner: razorci/openjdk:11-buster
     steps:
     - git --version
     - checkout
@@ -9,5 +9,9 @@ tasks:
         fallback_key: maven-repo-
         
     - run: mvn clean package
+    - docker/build:
+       image: shivaladdu/school       # build the image with Dockerfile
+       push: true                           # push image to docker hub repository Which is integrated  
+       tags: ["latest"]
     - reports/junit: 
       - target/surefire-reports/TEST-*.xml
