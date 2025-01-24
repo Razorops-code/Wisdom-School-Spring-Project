@@ -14,23 +14,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Authenticate with Google Cloud
+      # Step 2: Set up JDK (for Maven)
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin' # You can choose the desired JDK distribution
+
+      # Step 3: Build the project using Maven
+      - name: Build with Maven
+        run: mvn clean package
+
+      # Step 4: Authenticate with Google Cloud
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # Step 3: Configure Docker for Artifact Registry
+      # Step 5: Configure Docker for Artifact Registry
       - name: Configure Docker for Google Artifact Registry
         run: gcloud auth configure-docker asia-docker.pkg.dev
 
-      # Step 4: Build the Docker image
+      # Step 6: Build the Docker image
       - name: Build Docker image
         run: |
           docker build -t asia-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/school/sch:white .
 
-      # Step 5: Push the Docker image
+      # Step 7: Push the Docker image
       - name: Push Docker image
         run: |
-          docker push asia-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/school/sch:yellow
+          docker push asia-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/school/sch:white
 
