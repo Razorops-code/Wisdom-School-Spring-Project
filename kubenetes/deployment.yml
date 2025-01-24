@@ -15,6 +15,7 @@ spec:
       containers:
         - name: school
           image: adijaiswal/school:latest # Image that will be used to containers in the cluster
+#
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8070 # The port that the container is running on in the cluster
@@ -22,15 +23,37 @@ spec:
 
 ---
 
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
-  name: school-ssvc
-spec:
-  selector:
-    app: school
-  ports:
-    - protocol: "TCP"
-      port: 8080 # The port that the service is running on in the cluster
-      targetPort: 80800 # The port exposed by the service
-  type: LoadBalancer # type of the service.
+# apiVersion: v1 # Kubernetes API version
+# kind: Service # Kubernetes resource kind we are creating
+# metadata: # Metadata of the resource kind we are creating
+#   name: school-ssvc
+# spec:
+#   selector:
+#     app: school
+#   ports:
+#     - protocol: "TCP"
+#       port: 8080 # The port that the service is running on in the cluster
+#       targetPort: 80800 # The port exposed by the service
+#   type: LoadBalancer # type of the service.
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: your-deployment-name
+#   labels:
+#     app: your-app-name
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: your-app-name
+#   template:
+#     metadata:
+#       labels:
+#         app: your-app-name
+#     spec:
+#       containers:
+#       - name: your-container-name
+#         image: asia-docker.pkg.dev/your-project-id/your-repo/your-image:latest  # <-- Set your Docker image here
+#         ports:
+#         - containerPort: 8080
+
