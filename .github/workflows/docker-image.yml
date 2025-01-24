@@ -3,7 +3,7 @@ name: Push Docker Image to Google Artifact Registry
 on:
   push:
     branches:
-      - main # Trigger on push to the main branch
+      - master # Trigger on push to the master branch
 
 jobs:
   push-to-artifact-registry:
