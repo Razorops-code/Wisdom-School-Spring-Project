@@ -1,0 +1,36 @@
+name: Push Docker Image to Google Artifact Registry
+
+on:
+  push:
+    branches:
+      - main # Trigger on push to the main branch
+
+jobs:
+  push-to-artifact-registry:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Authenticate with Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # Step 3: Configure Docker for Artifact Registry
+      - name: Configure Docker for Google Artifact Registry
+        run: gcloud auth configure-docker asia-docker.pkg.dev
+
+      # Step 4: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t asia-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/school/sch:white .
+
+      # Step 5: Push the Docker image
+      - name: Push Docker image
+        run: |
+          docker push asia-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/school/sch:yellow
+
