@@ -25,14 +25,14 @@ steps:
     args:
       - build
       - "-t"
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:white
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
       - "."
   
   # Step 5: Push the Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:yellow
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
 
 images:
-  - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:yellow
+  - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
