@@ -7,6 +7,10 @@ steps:
       - |
         echo "$(git rev-parse --short HEAD)"
         echo "Source code is already cloned by Cloud Build."
+        git fetch --unshallow
+        newcommit=$(git rev-parse --short=6 HEAD)
+        echo "Commit ID is: $newcommit"
+        echo "$newcommit" > /workspace/commit_id
   
   # Step 2: Set up JDK (for Maven)
   - name: gcr.io/cloud-builders/mvn
