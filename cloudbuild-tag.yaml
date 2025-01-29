@@ -77,6 +77,7 @@
 substitutions:
   _PROJECT_ID: "aqueous-cortex-445305-m6"  # This can be uppercase or lowercase
   _DEFAULT_VERSION: "v1.0"
+  _REPO: "asia-docker.pkg.dev/$_PROJECT_ID/school/sch"
 
 steps:
   # Step 1: Convert $_PROJECT_ID to lowercase and set $_REPO
