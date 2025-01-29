@@ -33,7 +33,9 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit .
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"
+        echo "Building Docker image: $repo:$newcommit"
+        docker build -t "$repo:$newcommit" .
 
   # Step 5: Push the Docker image with commit ID as tag
   - name: gcr.io/cloud-builders/docker
@@ -43,13 +45,14 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"
+        echo "Pushing Docker image: $repo:$newcommit"
+        docker push "$repo:$newcommit"
 
 images:
-  - asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$COMMIT_SHA  # ✅ Use built-in substitution
+  - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:$newcommit"
 
 logsBucket: gs://school-build-logs
 
 options:
   logging: GCS_ONLY
-
