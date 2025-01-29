@@ -54,7 +54,7 @@ steps:
 # images:
 #   - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:$newcommit"
 
-# logsBucket: gs://school-build-logs
+logsBucket: gs://school-build-logs
 
-# options:
-#   logging: GCS_ONLY
+options:
+  logging: GCS_ONLY
