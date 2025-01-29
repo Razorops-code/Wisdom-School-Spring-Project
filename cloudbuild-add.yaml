@@ -1,63 +1,44 @@
+---
 steps:
-  # Step 1: Check out the repository (Cloud Build clones the source automatically)
   - name: gcr.io/cloud-builders/git
-    id: "get-commit-id"
-    entrypoint: "bash"
+    id: get-commit-id
+    entrypoint: bash
     args:
-      - "-c"
+      - -c
       - |
         echo "Source code is already cloned by Cloud Build."
         _COMMIT_ID=$(git rev-parse --short=5 HEAD)
         echo "Commit ID: $_COMMIT_ID"
         echo "$_COMMIT_ID" > /workspace/commit_id
-
-  # Step 2: Set up JDK (for Maven)
   - name: gcr.io/cloud-builders/mvn
     args:
       - clean
       - package
-
-  # Step 3: Authenticate to Google Cloud
   - name: gcr.io/cloud-builders/gcloud
     args:
       - auth
       - configure-docker
       - asia-south1-docker.pkg.dev
-
-  # Step 4: Build the Docker image with commit ID as tag
   - name: gcr.io/cloud-builders/docker
-    id: "build-image"
-    entrypoint: "bash"
+    id: build-image
+    entrypoint: bash
     args:
-      - "-c"
+      - -c
       - |
         _COMMIT_ID=$(cat /workspace/commit_id)
         docker build \
-          #-t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:latest \
-          -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$_COMMIT_ID \
+          -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID \
           .
-
-  # Step 5: Push the Docker image with commit ID as tag
   - name: gcr.io/cloud-builders/docker
-  id: "push-image"
-  entrypoint: "bash"
-  args:
-    - "-c"
-    - |
+    id: push-image
+    entrypoint: bash
+    args:
+      - -c
+      - >
         _COMMIT_ID=$(cat /workspace/commit_id)
+
+
         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
-
-  # - name: gcr.io/cloud-builders/docker
-  #   id: "push-image"
-  #   entrypoint: "bash"
-  #   args:
-  #     - "-c"
-  #     - |
-  #       _COMMIT_ID=$(cat /workspace/commit_id)
-  # #   - docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:latest
-  #       docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
-
 logsBucket: gs://school-build-logs
-
 options:
   logging: GCS_ONLY
