@@ -44,7 +44,7 @@ steps:
 #         _COMMIT_ID=$(cat /workspace/commit_id)
 #         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
 
-# logsBucket: gs://school-build-logs
+logsBucket: gs://school-build-logs
 
-# options:
-#   logging: GCS_ONLY
+options:
+  logging: GCS_ONLY
