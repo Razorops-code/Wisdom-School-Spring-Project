@@ -75,7 +75,7 @@
 # options:
 #   logging: GCS_ONLY
 substitutions:
-  _PROJECT_ID: "your-project-id"  # Define your project ID
+  _PROJECT_ID: "aqueous-cortex-445305-m6"  # Define your project ID
   _REPO: "asia-docker.pkg.dev/$(echo $_PROJECT_ID | tr '[:upper:]' '[:lower:]')/school/sch"
   _DEFAULT_VERSION: "v1.0"
 
