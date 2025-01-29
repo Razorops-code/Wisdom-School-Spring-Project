@@ -33,7 +33,7 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool/sch"  # ✅ Ensure no spaces
         repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
         echo "Building Docker image: $repo:$newcommit"
         docker build -t "$repo:$newcommit" .
@@ -46,13 +46,13 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool/sch"  # ✅ Ensure no spaces
         repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
         echo "Pushing Docker image: $repo:$newcommit"
         docker push "$repo:$newcommit"
 
 # images:
-#   - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:$newcommit"
+#   - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool/sch:$newcommit"
 
 logsBucket: gs://school-build-logs
 
