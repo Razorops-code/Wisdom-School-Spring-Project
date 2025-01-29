@@ -27,7 +27,12 @@ steps:
   
   # Step 4: Build the Docker image
   - name: gcr.io/cloud-builders/docker
-    args: ['build', '-t', 'asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:${newcommit}','.']
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        newcommit=$(cat /workspace/commit_id)
+        ['build', '-t', 'asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:${newcommit}','.']
       # - build
       # - "-t"
       # - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(newcommit) .
@@ -36,6 +41,9 @@ steps:
   # Step 5: Push the Docker image
   - name: gcr.io/cloud-builders/docker
     args:
+      - "-c"
+        |
+        newcommit=$(cat /workspace/commit_id)
       - push
       - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(newcommit) .
 
