@@ -2,7 +2,7 @@ steps:
   # Step 1: Get the commit ID
   - name: gcr.io/cloud-builders/git
     id: "get-commit-id"
-    entrypoint: "bash"
+    entrypoint: "sh"
     args:
       - "-c"
       - |
