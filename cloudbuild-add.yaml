@@ -24,7 +24,6 @@ steps:
     args:
       - auth
       - configure-docker
-      - y
       - asia-south1-docker.pkg.dev
 
   # Step 4: Build the Docker image with commit ID as tag
