@@ -34,6 +34,7 @@ steps:
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
         repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+        repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
         echo "Building Docker image: $repo:$newcommit"
         docker build -t "$repo:$newcommit" .
 
@@ -46,6 +47,7 @@ steps:
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
         repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+        repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
         echo "Pushing Docker image: $repo:$newcommit"
         docker push "$repo:$newcommit"
 
