@@ -5,7 +5,7 @@ steps:
     args:
       - "-c"
       - |
-        echo "$(git rev-parse --short HEAD)"
+        echo "$(newcommit)"
         echo "Source code is already cloned by Cloud Build."
         git fetch --unshallow
         newcommit=$(git rev-parse --short=6 HEAD)
@@ -30,17 +30,17 @@ steps:
     args:
       - build
       - "-t"
-      - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(git rev-parse --short HEAD) .
+      - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(newcommit) .
       - "."
   
   # Step 5: Push the Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(git rev-parse --short HEAD) .
+      - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(newcommit) .
 
 # images:
-#   - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$(git rev-parse --short HEAD) .
+#   - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$(newcommit) .
 logsBucket: gs://school-build-logs
 
 options:
