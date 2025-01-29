@@ -75,12 +75,23 @@
 # options:
 #   logging: GCS_ONLY
 substitutions:
-  # _PROJECT_ID: "aqueous-cortex-445305-m6"  # Define your project ID
-  _REPO: "asia-docker.pkg.dev/$(echo $_PROJECT_ID | tr '[:upper:]' '[:lower:]')/school/sch"
+  _PROJECT_ID: "aqueous-cortex-445305-m6"  # This can be uppercase or lowercase
   _DEFAULT_VERSION: "v1.0"
 
 steps:
-  # Step 1: Check out the repository
+  # Step 1: Convert $_PROJECT_ID to lowercase and set $_REPO
+  - name: gcr.io/cloud-builders/git
+    id: "set-repo"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        _PROJECT_ID_LOWER=$(echo $_PROJECT_ID | tr '[:upper:]' '[:lower:]')
+        _REPO="asia-docker.pkg.dev/$_PROJECT_ID_LOWER/school/sch"
+        echo "$_REPO" > /workspace/repo
+        echo "Repository set to: $_REPO"
+
+  # Step 2: Check out the repository
   - name: gcr.io/cloud-builders/git
     entrypoint: "bash"
     args:
@@ -88,26 +99,27 @@ steps:
       - |
         echo "Source code is already cloned by Cloud Build."
 
-  # Step 2: Set up JDK (for Maven)
+  # Step 3: Set up JDK (for Maven)
   - name: gcr.io/cloud-builders/mvn
     args:
       - clean
       - package
 
-  # Step 3: Authenticate to Google Cloud
+  # Step 4: Authenticate to Google Cloud
   - name: gcr.io/cloud-builders/gcloud
     args:
       - auth
       - configure-docker
       - asia-docker.pkg.dev
 
-  # Step 4: Get the latest version and calculate new version
+  # Step 5: Get the latest version and calculate new version
   - name: gcr.io/cloud-builders/gcloud
     id: "get-latest-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
+        _REPO=$(cat /workspace/repo)
         _LATEST_VERSION=$(gcloud artifacts docker images list $_REPO \
           --format="value(TAGS)" --sort-by="~CREATE_TIME" | grep -Eo 'v[0-9]+\.[0-9]+' | head -1)
 
@@ -122,31 +134,32 @@ steps:
         echo "$_NEW_VERSION" > /workspace/new_version
         echo "New version will be: $_NEW_VERSION"
 
-  # Step 5: Tag the previous "latest" image with the new version
+  # Step 6: Tag the previous "latest" image with the new version
   - name: gcr.io/cloud-builders/docker
     id: "tag-previous-latest"
     entrypoint: "bash"
     args:
       - "-c"
       - |
+        _REPO=$(cat /workspace/repo)
         _NEW_VERSION=$(cat /workspace/new_version)
         docker pull $_REPO:latest || exit 0
         docker tag $_REPO:latest $_REPO:$_NEW_VERSION
         docker push $_REPO:$_NEW_VERSION
 
-  # Step 6: Build the new Docker image
+  # Step 7: Build the new Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - build
       - "-t"
-      - "$_REPO:latest"
+      - "$(cat /workspace/repo):latest"
       - "."
 
-  # Step 7: Push the new "latest" Docker image
+  # Step 8: Push the new "latest" Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - "$_REPO:latest"
+      - "$(cat /workspace/repo):latest"
 
 logsBucket: gs://school-build-logs
 
