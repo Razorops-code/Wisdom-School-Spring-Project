@@ -43,10 +43,10 @@ steps:
     entrypoint: "bash"
     args:
       - "-c"
-      -  |
-         _COMMIT_ID=$(cat /workspace/commit_id)
+      - |
+        _COMMIT_ID=$(cat /workspace/commit_id)
   #   - docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:latest
-         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
+        docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
 
 logsBucket: gs://school-build-logs
 
