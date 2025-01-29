@@ -12,49 +12,49 @@ steps:
         echo "Commit ID is: $newcommit"
         echo "$newcommit" > /workspace/commit_id  # ✅ Save commit ID for later use
 
-  # Step 2: Set up JDK (for Maven)
-  - name: gcr.io/cloud-builders/mvn
-    args:
-      - clean
-      - package
+#   # Step 2: Set up JDK (for Maven)
+#   - name: gcr.io/cloud-builders/mvn
+#     args:
+#       - clean
+#       - package
 
-  # Step 3: Authenticate to Google Cloud
-  - name: gcr.io/cloud-builders/gcloud
-    args:
-      - auth
-      - configure-docker
-      - asia-south1-docker.pkg.dev
+#   # Step 3: Authenticate to Google Cloud
+#   - name: gcr.io/cloud-builders/gcloud
+#     args:
+#       - auth
+#       - configure-docker
+#       - asia-south1-docker.pkg.dev
 
-  # Step 4: Build the Docker image with commit ID as tag
-  - name: gcr.io/cloud-builders/docker
-    id: "build-image"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
-        repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
-        echo "Building Docker image: $repo:$newcommit"
-        docker build -t "$repo:$newcommit" .
+#   # Step 4: Build the Docker image with commit ID as tag
+#   - name: gcr.io/cloud-builders/docker
+#     id: "build-image"
+#     entrypoint: "bash"
+#     args:
+#       - "-c"
+#       - |
+#         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
+#         repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+#         repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
+#         echo "Building Docker image: $repo:$newcommit"
+#         docker build -t "$repo:$newcommit" .
 
-  # Step 5: Push the Docker image with commit ID as tag
-  - name: gcr.io/cloud-builders/docker
-    id: "push-image"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
-        repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
-        echo "Pushing Docker image: $repo:$newcommit"
-        docker push "$repo:$newcommit"
+#   # Step 5: Push the Docker image with commit ID as tag
+#   - name: gcr.io/cloud-builders/docker
+#     id: "push-image"
+#     entrypoint: "bash"
+#     args:
+#       - "-c"
+#       - |
+#         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
+#         repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+#         repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
+#         echo "Pushing Docker image: $repo:$newcommit"
+#         docker push "$repo:$newcommit"
 
-images:
-  - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:$newcommit"
+# images:
+#   - "asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool:$newcommit"
 
-logsBucket: gs://school-build-logs
+# logsBucket: gs://school-build-logs
 
-options:
-  logging: GCS_ONLY
+# options:
+#   logging: GCS_ONLY
