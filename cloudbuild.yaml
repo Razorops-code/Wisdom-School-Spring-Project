@@ -42,8 +42,8 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - "-c"
-        |
-        newcommit=$(cat /workspace/commit_id)
+        
+      - newcommit=$(cat /workspace/commit_id)
       - push
       - asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$(newcommit) .
 
