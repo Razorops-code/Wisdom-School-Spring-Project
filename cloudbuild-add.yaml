@@ -12,18 +12,18 @@ steps:
         echo "Commit ID is: $newcommit"
         echo "$newcommit" > /workspace/commit_id  # ✅ Save commit ID for later use
 
-#   # Step 2: Set up JDK (for Maven)
-#   - name: gcr.io/cloud-builders/mvn
-#     args:
-#       - clean
-#       - package
+  # Step 2: Set up JDK (for Maven)
+  - name: gcr.io/cloud-builders/mvn
+    args:
+      - clean
+      - package
 
-#   # Step 3: Authenticate to Google Cloud
-#   - name: gcr.io/cloud-builders/gcloud
-#     args:
-#       - auth
-#       - configure-docker
-#       - asia-south1-docker.pkg.dev
+  # Step 3: Authenticate to Google Cloud
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - auth
+      - configure-docker
+      - asia-south1-docker.pkg.dev
 
 #   # Step 4: Build the Docker image with commit ID as tag
 #   - name: gcr.io/cloud-builders/docker
