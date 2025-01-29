@@ -31,13 +31,13 @@ steps:
     args:
       - "-c"
       - |
-        LATEST_VERSION=$(gcloud artifacts docker images list $_REPO \
+        _LATEST_VERSION=$(gcloud artifacts docker images list $_REPO \
           --format="value(TAGS)" --sort-by="~CREATE_TIME" | grep -Eo 'v[0-9]+\.[0-9]+' | head -1)
 
-        if [[ -z "$LATEST_VERSION" ]]; then
+        if [[ -z "$_LATEST_VERSION" ]]; then
           NEW_VERSION="$_DEFAULT_VERSION"
         else
-          VERSION_NUMBER=$(echo $LATEST_VERSION | cut -d'.' -f2)
+          VERSION_NUMBER=$(echo $_LATEST_VERSION | cut -d'.' -f2)
           NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
         fi
 
