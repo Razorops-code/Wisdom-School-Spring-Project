@@ -41,7 +41,7 @@ steps:
           NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
         fi
 
-        echo $NEW_VERSION > /workspace/new_version
+        echo "$NEW_VERSION" > /workspace/new_version
         echo "New version will be: $NEW_VERSION"
 
   # Step 5: Tag the previous "latest" image with the new version
