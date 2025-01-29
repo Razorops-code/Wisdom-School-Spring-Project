@@ -25,18 +25,18 @@ steps:
       - configure-docker
       - asia-south1-docker.pkg.dev
 
-#   # Step 4: Build the Docker image with commit ID as tag
-#   - name: gcr.io/cloud-builders/docker
-#     id: "build-image"
-#     entrypoint: "bash"
-#     args:
-#       - "-c"
-#       - |
-#         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-#         repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
-#         repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
-#         echo "Building Docker image: $repo:$newcommit"
-#         docker build -t "$repo:$newcommit" .
+  # Step 4: Build the Docker image with commit ID as tag
+  - name: gcr.io/cloud-builders/docker
+    id: "build-image"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
+        repo=$(echo $repo | tr -d ' ')  # ✅ Remove any unwanted spaces
+        echo "Building Docker image: $repo:$newcommit"
+        docker build -t "$repo:$newcommit" .
 
 #   # Step 5: Push the Docker image with commit ID as tag
 #   - name: gcr.io/cloud-builders/docker
