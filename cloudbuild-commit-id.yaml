@@ -37,7 +37,7 @@ steps:
 
   # Step 5: Build the Docker image (without tagging)
   - name: gcr.io/cloud-builders/docker
-    args: ['build', '-t', 'asia-docker.pkg.dev/_PROJECT_ID/school/sha', './app1']
+    args: ['build', '-t', 'asia-docker.pkg.dev/_PROJECT_ID/school/sch', './app1']
     # args:
     #   - build
     #   - "-f"
