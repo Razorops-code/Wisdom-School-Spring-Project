@@ -9,7 +9,7 @@ steps:
         echo "Source code is already cloned by Cloud Build."
         git fetch --unshallow
         echo "short commit is $(git rev-parse --short=6 HEAD)"
-        newcommit='$(git rev-parse --short=6 HEAD)'
+        newcommit=$(git rev-parse --short=6 HEAD)
         echo "Commit ID is: $newcommit"
         #echo "$_COMMIT_ID" > /workspace/commit_id
 
