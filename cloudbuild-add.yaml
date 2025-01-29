@@ -24,6 +24,7 @@ steps:
     args:
       - auth
       - configure-docker
+      - y
       - asia-south1-docker.pkg.dev
 
   # Step 4: Build the Docker image with commit ID as tag
@@ -34,7 +35,7 @@ steps:
       - "-c"
       - |
         # newcommit=$(cat /workspace/commit_id)
-        docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit .
+        sudo docker build -t asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$newcommit .
 
   # Step 5: Push the Docker image with commit ID as tag
   - name: gcr.io/cloud-builders/docker
@@ -44,7 +45,7 @@ steps:
       - "-c"
       - |
         # newcommit=$(cat /workspace/commit_id)
-        docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit
+        sudo docker push asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool:$newcommit
 
 logsBucket: gs://school-build-logs
 
