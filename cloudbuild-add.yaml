@@ -46,6 +46,9 @@ steps:
         # newcommit=$(cat /workspace/commit_id)
         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit
 
+   images:
+     - asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit .
+
 logsBucket: gs://school-build-logs
 
 options:
