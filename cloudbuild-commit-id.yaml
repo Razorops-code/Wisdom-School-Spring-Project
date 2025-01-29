@@ -24,28 +24,29 @@ steps:
       - configure-docker
       - asia-docker.pkg.dev
 
-  # Step 4: Get the first 6 characters of the commit SHA
+  # Step 4: Get the first 6 characters of the commit SHA and convert to lowercase
   - name: gcr.io/cloud-builders/git
     entrypoint: "bash"
     args:
       - "-c"
       - |
         COMMIT_SHA=$(git rev-parse --short=6 HEAD)
-        echo "Commit SHA (first 6 chars): $COMMIT_SHA" > /workspace/commit_id.txt
+        COMMIT_SHA_LOWER=$(echo $COMMIT_SHA | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
+        echo "Commit SHA (first 6 chars, lowercase): $COMMIT_SHA_LOWER" > /workspace/commit_id.txt
 
-  # Step 5: Build the Docker image and tag it with the commit SHA
+  # Step 5: Build the Docker image and tag it with the lowercase commit SHA
   - name: gcr.io/cloud-builders/docker
     args:
       - build
       - "-t"
-      - "$_REPO:$COMMIT_SHA"
+      - "$_REPO:$COMMIT_SHA_LOWER"
       - "."
 
-  # Step 6: Push the Docker image with the commit SHA tag
+  # Step 6: Push the Docker image with the lowercase commit SHA tag
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - "$_REPO:$COMMIT_SHA"
+      - "$_REPO:$COMMIT_SHA_LOWER"
 
 logsBucket: gs://school-build-logs
 
