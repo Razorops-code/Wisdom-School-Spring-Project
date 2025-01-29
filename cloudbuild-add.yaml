@@ -32,7 +32,7 @@ steps:
       - "-c"
       - |
         _COMMIT_ID=$(cat /workspace/commit_id)
-        docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$_COMMIT_ID .
+        docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID .
 
   # Step 5: Push the Docker image with commit ID as tag
   - name: gcr.io/cloud-builders/docker
@@ -42,7 +42,7 @@ steps:
       - "-c"
       - |
         _COMMIT_ID=$(cat /workspace/commit_id)
-        docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$_COMMIT_ID
+        docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$_COMMIT_ID
 
 logsBucket: gs://school-build-logs
 
