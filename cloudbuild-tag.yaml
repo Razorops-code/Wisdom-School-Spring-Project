@@ -1,0 +1,71 @@
+steps:
+  # Step 1: Check out the repository (Cloud Build clones the source automatically)
+  - name: gcr.io/cloud-builders/git
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Source code is already cloned by Cloud Build."
+
+  # Step 2: Set up JDK (for Maven)
+  - name: gcr.io/cloud-builders/mvn
+    args:
+      - clean
+      - package
+
+  # Step 3: Authenticate to Google Cloud
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - auth
+      - configure-docker
+      - asia-docker.pkg.dev
+
+  # Step 4: Get the latest version tag (excluding "latest")
+  - name: gcr.io/cloud-builders/gcloud
+    id: "get-latest-version"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        LATEST_VERSION=$(gcloud artifacts docker images list asia-docker.pkg.dev/$_PROJECT_ID/school/sch \
+          --format="value(TAGS)" --sort-by="~CREATE_TIME" | grep -Eo 'v[0-9]+\.[0-9]+' | head -1)
+
+        if [[ -z "$LATEST_VERSION" ]]; then
+          NEW_VERSION="v1.0"
+        else
+          VERSION_NUMBER=$(echo $LATEST_VERSION | cut -d'.' -f2)
+          NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
+        fi
+
+        echo "NEW_VERSION=$NEW_VERSION" >> /workspace/env_vars
+
+  # Step 5: Tag the previous "latest" image as the new version
+  - name: gcr.io/cloud-builders/docker
+    id: "tag-previous-latest"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        source /workspace/env_vars
+        docker pull asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest || exit 0
+        docker tag asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$NEW_VERSION
+        docker push asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$NEW_VERSION
+
+  # Step 6: Build the new Docker image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "-t"
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+      - "."
+
+  # Step 7: Push the new "latest" Docker image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+
+logsBucket: gs://school-build-logs
+
+options:
+  logging: GCS_ONLY
