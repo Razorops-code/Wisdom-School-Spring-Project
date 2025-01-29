@@ -2,11 +2,12 @@ steps:
   # Step 1: Get the commit ID
   - name: gcr.io/cloud-builders/git
     id: "get-commit-id"
-    entrypoint: "sh"
+    entrypoint: "bash"
     args:
       - "-c"
       - |
         echo "Source code is already cloned by Cloud Build."
+        git fetch --unshallow
         _COMMIT_ID=$(git rev-parse --short=5 HEAD)
         echo "Commit ID is: $_COMMIT_ID"
         #echo "$_COMMIT_ID" > /workspace/commit_id
