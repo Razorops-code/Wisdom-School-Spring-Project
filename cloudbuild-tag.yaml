@@ -1,3 +1,7 @@
+substitutions:
+  _REPO: "asia-docker.pkg.dev/$_PROJECT_ID/school/sch"
+  _DEFAULT_VERSION: "v1.0"
+
 steps:
   # Step 1: Check out the repository (Cloud Build clones the source automatically)
   - name: gcr.io/cloud-builders/git
@@ -20,23 +24,24 @@ steps:
       - configure-docker
       - asia-docker.pkg.dev
 
-  # Step 4: Get the latest version tag (excluding "latest")
+  # Step 4: Get the latest version tag (excluding "latest") and calculate new version
   - name: gcr.io/cloud-builders/gcloud
     id: "get-latest-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        LATEST_VERSION=$(gcloud artifacts docker images list asia-docker.pkg.dev/$_PROJECT_ID/school/sch \
+        LATEST_VERSION=$(gcloud artifacts docker images list $_REPO \
           --format="value(TAGS)" --sort-by="~CREATE_TIME" | grep -Eo 'v[0-9]+\.[0-9]+' | head -1)
 
         if [[ -z "$LATEST_VERSION" ]]; then
-          NEW_VERSION="v1.0"
+          NEW_VERSION="$_DEFAULT_VERSION"
         else
           VERSION_NUMBER=$(echo $LATEST_VERSION | cut -d'.' -f2)
           NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
         fi
 
+        echo "New version will be tagged as: $NEW_VERSION"
         echo "NEW_VERSION=$NEW_VERSION" >> /workspace/env_vars
 
   # Step 5: Tag the previous "latest" image as the new version
@@ -47,23 +52,23 @@ steps:
       - "-c"
       - |
         source /workspace/env_vars
-        docker pull asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest || exit 0
-        docker tag asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$NEW_VERSION
-        docker push asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$NEW_VERSION
+        docker pull $_REPO:latest || exit 0
+        docker tag $_REPO:latest $_REPO:$NEW_VERSION
+        docker push $_REPO:$NEW_VERSION
 
   # Step 6: Build the new Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - build
       - "-t"
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+      - "$_REPO:latest"
       - "."
 
   # Step 7: Push the new "latest" Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+      - "$_REPO:latest"
 
 logsBucket: gs://school-build-logs
 
