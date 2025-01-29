@@ -10,7 +10,7 @@ steps:
         git fetch --unshallow
         newcommit=$(git rev-parse --short=6 HEAD)
         echo "Commit ID is: $newcommit"
-        echo "$newcommit" > /workspace/commit_id  # ✅ Store for later steps
+        echo "$newcommit" > /workspace/commit_id  # ✅ Save commit ID for later use
 
   # Step 2: Set up JDK (for Maven)
   - name: gcr.io/cloud-builders/mvn
@@ -33,7 +33,7 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
         echo "Building Docker image: $repo:$newcommit"
         docker build -t "$repo:$newcommit" .
 
@@ -45,7 +45,7 @@ steps:
       - "-c"
       - |
         newcommit=$(cat /workspace/commit_id)  # ✅ Retrieve commit ID
-        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"
+        repo="asia-south1-docker.pkg.dev/${_PROJECT_ID}/newschool"  # ✅ Ensure no spaces
         echo "Pushing Docker image: $repo:$newcommit"
         docker push "$repo:$newcommit"
 
