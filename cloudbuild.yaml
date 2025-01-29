@@ -5,6 +5,7 @@ steps:
     args:
       - "-c"
       - |
+        echo "$(git rev-parse --short HEAD)"
         echo "Source code is already cloned by Cloud Build."
   
   # Step 2: Set up JDK (for Maven)
@@ -25,17 +26,17 @@ steps:
     args:
       - build
       - "-t"
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$(git rev-parse --short HEAD) .
       - "."
   
   # Step 5: Push the Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+      - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$(git rev-parse --short HEAD) .
 
 # images:
-#   - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+#   - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:$(git rev-parse --short HEAD) .
 logsBucket: gs://school-build-logs
 
 options:
