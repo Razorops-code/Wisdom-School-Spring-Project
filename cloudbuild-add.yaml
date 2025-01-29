@@ -33,7 +33,7 @@ steps:
     args:
       - "-c"
       - |
-        newcommit=$(cat /workspace/commit_id)
+        #newcommit=$(cat /workspace/commit_id)
         docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit .
 
   # Step 5: Push the Docker image with commit ID as tag
@@ -43,7 +43,7 @@ steps:
     args:
       - "-c"
       - |
-        newcommit=$(cat /workspace/commit_id)
+        #newcommit=$(cat /workspace/commit_id)
         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool:$newcommit
 
 logsBucket: gs://school-build-logs
