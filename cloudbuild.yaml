@@ -34,8 +34,8 @@ steps:
       - push
       - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
 
-images:
-  - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
+# images:
+#   - asia-docker.pkg.dev/$_PROJECT_ID/school/sch:latest
 logsBucket: gs://school-build-logs
 
 options:
