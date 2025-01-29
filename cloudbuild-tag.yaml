@@ -24,7 +24,7 @@ steps:
       - configure-docker
       - asia-docker.pkg.dev
 
-  # Step 4: Get the latest version tag (excluding "latest") and calculate new version
+  # Step 4: Get the latest version and calculate new version
   - name: gcr.io/cloud-builders/gcloud
     id: "get-latest-version"
     entrypoint: "bash"
@@ -41,17 +41,17 @@ steps:
           NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
         fi
 
-        echo "New version will be tagged as: $NEW_VERSION"
-        echo "NEW_VERSION=$NEW_VERSION" >> /workspace/env_vars
+        echo $NEW_VERSION > /workspace/new_version
+        echo "New version will be: $NEW_VERSION"
 
-  # Step 5: Tag the previous "latest" image as the new version
+  # Step 5: Tag the previous "latest" image with the new version
   - name: gcr.io/cloud-builders/docker
     id: "tag-previous-latest"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        source /workspace/env_vars
+        NEW_VERSION=$(cat /workspace/new_version)
         docker pull $_REPO:latest || exit 0
         docker tag $_REPO:latest $_REPO:$NEW_VERSION
         docker push $_REPO:$NEW_VERSION
