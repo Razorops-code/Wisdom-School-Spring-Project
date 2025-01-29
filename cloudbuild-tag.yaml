@@ -35,14 +35,14 @@ steps:
           --format="value(TAGS)" --sort-by="~CREATE_TIME" | grep -Eo 'v[0-9]+\.[0-9]+' | head -1)
 
         if [[ -z "$_LATEST_VERSION" ]]; then
-          NEW_VERSION="$_DEFAULT_VERSION"
+          _NEW_VERSION="$_DEFAULT_VERSION"
         else
           VERSION_NUMBER=$(echo $_LATEST_VERSION | cut -d'.' -f2)
-          NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
+          _NEW_VERSION="v1.$((VERSION_NUMBER + 1))"
         fi
 
-        echo "$NEW_VERSION" > /workspace/new_version
-        echo "New version will be: $NEW_VERSION"
+        echo "$_NEW_VERSION" > /workspace/new_version
+        echo "New version will be: $_NEW_VERSION"
 
   # Step 5: Tag the previous "latest" image with the new version
   - name: gcr.io/cloud-builders/docker
@@ -51,10 +51,10 @@ steps:
     args:
       - "-c"
       - |
-        NEW_VERSION=$(cat /workspace/new_version)
+        _NEW_VERSION=$(cat /workspace/new_version)
         docker pull $_REPO:latest || exit 0
-        docker tag $_REPO:latest $_REPO:$NEW_VERSION
-        docker push $_REPO:$NEW_VERSION
+        docker tag $_REPO:latest $_REPO:$_NEW_VERSION
+        docker push $_REPO:$_NEW_VERSION
 
   # Step 6: Build the new Docker image
   - name: gcr.io/cloud-builders/docker
