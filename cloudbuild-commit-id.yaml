@@ -1,5 +1,5 @@
 substitutions:
-  _REPO: "asia-docker.pkg.dev/$(echo $_PROJECT_ID | tr '[:upper:]' '[:lower:]')/school/sch"
+  _REPO: "asia-docker.pkg.dev/$_PROJECT_ID/school/sch"
 
 steps:
   # Step 1: Check out the repository (Cloud Build clones the source automatically)
@@ -33,31 +33,20 @@ steps:
         COMMIT_SHA=$(git rev-parse --short=6 HEAD)
         _COMMIT_SHA_LOWER=$(echo $COMMIT_SHA | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
         echo "Commit SHA (first 6 chars, lowercase): $_COMMIT_SHA_LOWER" > /workspace/commit_id.txt
-        echo "COMMIT_SHA=$_COMMIT_SHA_LOWER" > /workspace/commit_sha.env  # Save to file for next steps
 
-  # Step 5: Build the Docker image (without tagging)
+  # Step 5: Build the Docker image and tag it with the lowercase commit SHA
   - name: gcr.io/cloud-builders/docker
-    args: ['build', '-t', 'asia-docker.pkg.dev/_PROJECT_ID/school/sch', './app1']
-    # args:
-    #   - build
-    #   - "-f"
-    #   - "Dockerfile"
-    #   - "-t"
-    #   - "$_REPO:build"  # Use a temporary 'build' tag
-    #   - "."
+    args:
+      - build
+      - "-t"
+      - "$_REPO:$_COMMIT_SHA_LOWER"
+      - "."
 
-  # # Step 6: Tag the Docker image with the commit SHA
-  # - name: gcr.io/cloud-builders/docker
-  #   args:
-  #     - tag
-  #     - "$_REPO:build"
-  #     - "$_REPO:${_COMMIT_SHA_LOWER}"  # Tag with commit SHA (from previous step)
-
-  # # Step 7: Push the Docker image with the lowercase commit SHA tag
-  # - name: gcr.io/cloud-builders/docker
-  #   args:
-  #     - push
-  #     - "$_REPO:${_COMMIT_SHA_LOWER}"
+  # Step 6: Push the Docker image with the lowercase commit SHA tag
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - "$_REPO:$_COMMIT_SHA_LOWER"
 
 logsBucket: gs://school-build-logs
 
