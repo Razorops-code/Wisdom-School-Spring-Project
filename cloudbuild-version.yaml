@@ -1,26 +1,51 @@
 steps:
-  # Step 1: Retrieve the latest version
+  # Step 1: Retrieve the latest version or initialize v1.0
   - name: gcr.io/cloud-builders/gcloud
     id: "get-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        if [ -f version.txt ]; then
+        if gsutil stat gs://school-build-logs/version.txt; then
+          gsutil cp gs://school-build-logs/version.txt version.txt
           newversion=$(cat version.txt)
         else
           newversion="v1.0"
         fi
         echo "Previous Version: $newversion"
-        
-        # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
+
+        # Extract major and minor versions
         newmajor=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
         newminor=$(echo $newversion | cut -d'.' -f2)
-        _NEWnewversion="v${newmajor}.$((newminor + 1))"
+
+        # Increment minor version
+        _NEW_VERSION="v${newmajor}.$((newminor + 1))"
+        echo "New Version: $_NEW_VERSION"
+        echo $_NEW_VERSION > version.txt
+
+# steps:
+#   # Step 1: Retrieve the latest version
+#   - name: gcr.io/cloud-builders/gcloud
+#     id: "get-version"
+#     entrypoint: "bash"
+#     args:
+#       - "-c"
+#       - |
+#         if [ -f version.txt ]; then
+#           newversion=$(cat version.txt)
+#         else
+#           newversion="v1.0"
+#         fi
+#         echo "Previous Version: $newversion"
         
-        echo "New Version: $_NEWnewversion"
-        echo $_NEWnewversion > version.txt
-        cat version.txt  # Print new version
+#         # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
+#         newmajor=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
+#         newminor=$(echo $newversion | cut -d'.' -f2)
+#         _NEWnewversion="v${newmajor}.$((newminor + 1))"
+        
+#         echo "New Version: $_NEWnewversion"
+#         echo $_NEWnewversion > version.txt
+#         cat version.txt  # Print new version
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
 
