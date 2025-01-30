@@ -1,13 +1,26 @@
 steps:
-  - name: gcr.io/cloud-builders/git
-    id: "fetch-version"
+  # Step 1: Retrieve the latest version
+  - name: gcr.io/cloud-builders/gcloud
+    id: "get-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        _LAST_TAG=$(git describe --tags --abbrev=0 || echo "v1.0")
-        NEW_VERSION=$(echo $_LAST_TAG | awk -F'.' '{print $1"."$2+1}')
-        echo "Using version: $NEW_VERSION"
+        if [ -f version.txt ]; then
+          VERSION=$(cat version.txt)
+        else
+          VERSION="v1.0"
+        fi
+        echo "Previous Version: $VERSION"
+        
+        # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
+        MAJOR=$(echo $VERSION | cut -d'.' -f1 | sed 's/v//')
+        MINOR=$(echo $VERSION | cut -d'.' -f2)
+        NEW_VERSION="v${MAJOR}.$((MINOR + 1))"
+        
+        echo "New Version: $NEW_VERSION"
+        echo $NEW_VERSION > version.txt
+        cat version.txt  # Print new version
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
 
