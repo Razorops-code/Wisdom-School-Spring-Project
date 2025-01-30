@@ -8,20 +8,20 @@ steps:
       - |
         if gsutil stat gs://school-build-logs/version.txt; then
           gsutil cp gs://school-build-logs/version.txt version.txt
-          _NEW_VERSION=$(cat version.txt)
+          newversion=$(cat version.txt)
         else
-          _NEW_VERSION="v1.0"
+          newversion="v1.0"
         fi
-        echo "Previous Version: $_NEW_VERSION"
+        echo "Previous Version: $newversion"
 
         # Extract major and minor versions
-        major=$(echo $_NEW_VERSION | cut -d'.' -f1 | sed 's/v//')
-        minor=$(echo $_NEW_VERSION | cut -d'.' -f2)
+        major=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
+        minor=$(echo $newversion | cut -d'.' -f2)
 
         # Increment minor version
-        _NEW_VERSION="v${major}.$((minor + 1))"
-        echo "New Version: $_NEW_VERSION"
-        echo "$_NEW_VERSION" > version.txt
+        newversion="v${major}.$((minor + 1))"
+        echo "New Version: $newversion"
+        echo "$newversion" > version.txt
 
   # Step 2: Build the Maven project
   - name: gcr.io/cloud-builders/mvn
@@ -43,8 +43,8 @@ steps:
     args:
       - "-c"
       - |
-        _NEW_VERSION=$(cat version.txt)
-        docker build -t asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool/sch:$_NEW_VERSION .
+        newversion=$(cat version.txt)
+        docker build -t asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool/sch:$newversion .
 
   # Step 5: Push the Docker image with the new version tag
   - name: gcr.io/cloud-builders/docker
@@ -53,8 +53,8 @@ steps:
     args:
       - "-c"
       - |
-        _NEW_VERSION=$(cat version.txt)
-        docker push asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool/sch:$_NEW_VERSION
+        newversion=$(cat version.txt)
+        docker push asia-south1-docker.pkg.dev/aqueous-cortex-445305-m6/newschool/sch:$newversion
 
   # Step 6: Save the new version to a GCS bucket for the next build
   - name: gcr.io/cloud-builders/gsutil
@@ -86,9 +86,9 @@ logsBucket: gs://school-build-logs
 #         newminor=$(echo $newversion | cut -d'.' -f2)
 
 #         # Increment minor version
-#         _NEW_VERSION="v${newmajor}.$((newminor + 1))"
-#         echo "New Version: $_NEW_VERSION"
-#         echo $_NEW_VERSION > version.txt
+#         newversion="v${newmajor}.$((newminor + 1))"
+#         echo "New Version: $newversion"
+#         echo $newversion > version.txt
 
 
 #   # Step 2: Build the Maven project
@@ -111,8 +111,8 @@ logsBucket: gs://school-build-logs
 #     args:
 #       - "-c"
 #       - |
-#         _NEW_VERSION=$(cat version.txt)
-#         docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$_NEW_VERSION .
+#         newversion=$(cat version.txt)
+#         docker build -t asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$newversion .
 
 #   # Step 5: Push the Docker image with the new version tag
 #   - name: gcr.io/cloud-builders/docker
@@ -121,8 +121,8 @@ logsBucket: gs://school-build-logs
 #     args:
 #       - "-c"
 #       - |
-#         _NEW_VERSION=$(cat version.txt)
-#         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$_NEW_VERSION
+#         newversion=$(cat version.txt)
+#         docker push asia-south1-docker.pkg.dev/$_PROJECT_ID/newschool/sch:$newversion
 
 #   # Step 6: Save the new version to a GCS bucket for the next build
 #   - name: gcr.io/cloud-builders/gsutil
