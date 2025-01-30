@@ -11,7 +11,7 @@ steps:
         else
           newversion="v1.0"
         fi
-        echo "Previous Version: $VERSION"
+        echo "Previous Version: $newversion"
         
         # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
         MAJOR=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
