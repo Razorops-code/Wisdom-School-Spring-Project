@@ -65,9 +65,6 @@ images:
 
 logsBucket: gs://school-build-logs
 
-options:
-  logging: CLOUD_LOGGING_ONLY
-
 # steps:
 #   # Step 1: Retrieve the latest version or initialize v1.0
 #   - name: gcr.io/cloud-builders/gcloud
