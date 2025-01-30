@@ -1,24 +1,16 @@
 steps:
-  # Step 1: Fetch or generate version number
+  # Step 1: Fetch the version from substitution variable (_NEW_VERSION)
   - name: gcr.io/cloud-builders/git
     id: "fetch-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        VERSION_FILE="gs://school-build-logs/version.txt"
-        
-        # Check if version file exists
-        if gsutil stat $VERSION_FILE; then
-          CURRENT_VERSION=$(gsutil cat $VERSION_FILE)
-          echo "Current Version: $CURRENT_VERSION"
-        else
-          CURRENT_VERSION="v1.0"
+        if [ -z "${_NEW_VERSION}" ]; then
+          echo "Error: _NEW_VERSION is not set!"
+          exit 1
         fi
-
-        # Increment version (e.g., v1.0 → v1.1)
-        NEW_VERSION=$(echo $CURRENT_VERSION | awk -F'.' '{print $1"."$2+1}')
-        echo "$NEW_VERSION" > /workspace/version.txt
+        echo "Using version: ${_NEW_VERSION}"
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
 
