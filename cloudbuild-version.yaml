@@ -5,8 +5,8 @@ steps:
     args:
       - "-c"
       - |
-        LAST_TAG=$(git describe --tags --abbrev=0 || echo "v1.0")
-        NEW_VERSION=$(echo $LAST_TAG | awk -F'.' '{print $1"."$2+1}')
+        _LAST_TAG=$(git describe --tags --abbrev=0 || echo "v1.0")
+        NEW_VERSION=$(echo $_LAST_TAG | awk -F'.' '{print $1"."$2+1}')
         echo "Using version: $NEW_VERSION"
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
