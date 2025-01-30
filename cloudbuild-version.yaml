@@ -9,7 +9,7 @@ steps:
         if [ -f version.txt ]; then
           newversion=$(cat version.txt)
         else
-          VERSION="v1.0"
+          newversion="v1.0"
         fi
         echo "Previous Version: $VERSION"
         
