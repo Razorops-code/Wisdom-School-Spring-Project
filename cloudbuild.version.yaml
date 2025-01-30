@@ -1,6 +1,5 @@
 steps:
-  # Step 1: Fetch the latest version number from Google Cloud Storage
-  - name: gcr.io/cloud-builders/gsutil
+  - name: gcr.io/cloud-builders/git
     id: "fetch-version"
     entrypoint: "bash"
     args:
@@ -12,10 +11,11 @@ steps:
           echo "Current Version: $CURRENT_VERSION"
         else
           CURRENT_VERSION="v1.0"
-          echo "Version file not found. Setting initial version: $CURRENT_VERSION"
         fi
-
-        # Increment version (assumes format vX.Y)
         NEW_VERSION=$(echo $CURRENT_VERSION | awk -F'.' '{print $1"."$2+1}')
-        echo "New Version: $NEW_VERSION"
         echo "$NEW_VERSION" > /workspace/version.txt
+
+logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
+
+options:
+  logging: CLOUD_LOGGING_ONLY  # Option 2 (Use Cloud Logging)
