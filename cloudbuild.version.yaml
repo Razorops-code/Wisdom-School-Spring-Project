@@ -17,5 +17,5 @@ steps:
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
 
-options:
-  logging: CLOUD_LOGGING_ONLY  # Option 2 (Use Cloud Logging)
+# options:
+#   logging: CLOUD_LOGGING_ONLY  # Option 2 (Use Cloud Logging)
