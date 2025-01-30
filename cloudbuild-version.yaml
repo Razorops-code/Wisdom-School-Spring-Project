@@ -7,19 +7,19 @@ steps:
       - "-c"
       - |
         if [ -f version.txt ]; then
-          _VERSION=$(cat version.txt)
+          newversion=$(cat version.txt)
         else
           VERSION="v1.0"
         fi
         echo "Previous Version: $VERSION"
         
         # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
-        MAJOR=$(echo $_VERSION | cut -d'.' -f1 | sed 's/v//')
-        MINOR=$(echo $_VERSION | cut -d'.' -f2)
-        _NEW_VERSION="v${MAJOR}.$((MINOR + 1))"
+        MAJOR=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
+        MINOR=$(echo $newversion | cut -d'.' -f2)
+        _NEWnewversion="v${MAJOR}.$((MINOR + 1))"
         
-        echo "New Version: $_NEW_VERSION"
-        echo $_NEW_VERSION > version.txt
+        echo "New Version: $_NEWnewversion"
+        echo $_NEWnewversion > version.txt
         cat version.txt  # Print new version
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
