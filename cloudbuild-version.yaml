@@ -14,9 +14,9 @@ steps:
         echo "Previous Version: $newversion"
         
         # Increment version (v1.0 → v1.1, v1.1 → v1.2, etc.)
-        MAJOR=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
-        MINOR=$(echo $newversion | cut -d'.' -f2)
-        _NEWnewversion="v${MAJOR}.$((MINOR + 1))"
+        newmajor=$(echo $newversion | cut -d'.' -f1 | sed 's/v//')
+        newminor=$(echo $newversion | cut -d'.' -f2)
+        _NEWnewversion="v${newmajor}.$((newminor + 1))"
         
         echo "New Version: $_NEWnewversion"
         echo $_NEWnewversion > version.txt
