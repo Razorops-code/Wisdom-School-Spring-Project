@@ -1,16 +1,12 @@
-steps:
-  # Step 1: Fetch the version from substitution variable (_NEW_VERSION)
   - name: gcr.io/cloud-builders/git
     id: "fetch-version"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        if [ -z "${_NEW_VERSION}" ]; then
-          echo "Error: _NEW_VERSION is not set!"
-          exit 1
-        fi
-        echo "Using version: ${_NEW_VERSION}"
+        LAST_TAG=$(git describe --tags --abbrev=0 || echo "v1.0")
+        NEW_VERSION=$(echo $LAST_TAG | awk -F'.' '{print $1"."$2+1}')
+        echo "Using version: $NEW_VERSION"
 
 logsBucket: gs://school-build-logs  # Option 1 (Use GCS logs)
 
