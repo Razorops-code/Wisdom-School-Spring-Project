@@ -13,3 +13,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 bind-address = 0.0.0.0
 sudo systemctl restart mysql
+
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+bind-address = 127.0.0.1 change to 0.0.0.0
+sudo systemctl restart mysql
