@@ -1,0 +1,15 @@
+mysql -u root -p
+CREATE DATABASE wisdomschool;
+SHOW DATABASES;
+CREATE USER 'springuser'@'%' IDENTIFIED BY 'springpassword';
+GRANT ALL PRIVILEGES ON wisdomschool.* TO 'springuser'@'%';
+FLUSH PRIVILEGES;
+EXIT;
+# Database connection properties
+spring.datasource.url=jdbc:mysql://<SERVER_IP>:3306/wisdomschool
+spring.datasource.username=springuser
+spring.datasource.password=springpassword
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+bind-address = 0.0.0.0
+sudo systemctl restart mysql
