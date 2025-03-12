@@ -1,0 +1,59 @@
+trigger:
+- master  # Change this to your branch
+
+pool:
+  name: sample  # Self-hosted agent pool name
+  demands:
+    - Agent.Name -equals school  # Ensuring the correct agent is used
+
+variables:
+  ACR_NAME: "sample"  # Name of your Azure Container Registry
+  IMAGE_NAME: "school" # Name of the Docker image
+  IMAGE_TAG: "$(Build.BuildId)" # Unique tag for each build
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+
+stages:
+- stage: Build
+  displayName: "Build Java and Docker Image"
+  jobs:
+  - job: BuildJob
+    displayName: "Build and Package App"
+    steps:
+    
+    - task: Maven@3
+      displayName: "Run Maven Clean Package"
+      inputs:
+        mavenPomFile: "pom.xml"
+        goals: "clean package"
+        publishJUnitResults: true
+        options: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
+        javaHomeOption: "JDKVersion"
+        jdkVersionOption: "8"
+        mavenVersionOption: "Default"
+        mavenAuthenticateFeed: false
+
+    - script: |
+        echo "Building Docker Image..."
+        docker build -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(IMAGE_TAG) .
+      displayName: "Build Docker Image"
+
+- stage: Push
+  displayName: "Push Docker Image to ACR"
+  jobs:
+  - job: PushJob
+    displayName: "Push Image to Azure Container Registry"
+    steps:
+
+    - task: AzureCLI@2
+      displayName: "Login to ACR"
+      inputs:
+        azureSubscription: "azurerm"
+        scriptType: "bash"
+        scriptLocation: "inlineScript"
+        inlineScript: |
+          az acr login --name $(ACR_NAME)
+
+    - script: |
+        echo "Pushing Docker image to ACR..."
+        docker push $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(IMAGE_TAG)
+      displayName: "Push Docker Image"
