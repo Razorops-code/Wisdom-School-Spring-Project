@@ -7,7 +7,7 @@ pool:
     - Agent.Name -equals school  # Ensuring the correct agent is used
 
 variables:
-  ACR_NAME: "sample"  # Name of your Azure Container Registry
+  ACR_NAME: "sampelschool"  # Name of your Azure Container Registry
   IMAGE_NAME: "school" # Name of the Docker image
   IMAGE_TAG: "$(Build.BuildId)" # Unique tag for each build
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
@@ -28,7 +28,7 @@ stages:
         publishJUnitResults: true
         options: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
         javaHomeOption: "JDKVersion"
-        jdkVersionOption: "8"
+        jdkVersionOption: "/usr/lib/jvm/java-8-openjdk-amd64" 
         mavenVersionOption: "Default"
         mavenAuthenticateFeed: false
 
